@@ -18,9 +18,10 @@ const SortPopup = React.memo(function SortPopup({ items, activeSortType, onClick
     setVisiblePopup(!visiblePopup);
   };
 
-  const handleOutsideClick = (e) => {
+  const handleOutsideClick = (event) => {
     // если нажали не на sort - скрыть sort
-    if (!e.path.includes(sortRef.current)) {
+    const path = event.path || (event.composedPath && event.composedPath());
+    if (!path.includes(sortRef.current)) {
       setVisiblePopup(false);
     }
   };
@@ -53,8 +54,8 @@ const SortPopup = React.memo(function SortPopup({ items, activeSortType, onClick
             {items &&
               items.map((obj, index) => (
                 <li
-                  onClick={() => onSelectItem(obj.type)}
-                  className={activeSortType === index ? 'active' : ''}
+                  onClick={() => onSelectItem(obj)}
+                  className={activeSortType === obj.type ? 'active' : ''}
                   key={`${obj.type}_${index}`}>
                   {obj.name}
                 </li>
@@ -67,7 +68,7 @@ const SortPopup = React.memo(function SortPopup({ items, activeSortType, onClick
 });
 
 SortPopup.propTypes = {
-  //activeSortType: PropTypes.string.isRequired,
+  activeSortType: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   onClickSortType: PropTypes.func.isRequired,
 };

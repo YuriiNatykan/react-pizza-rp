@@ -2,16 +2,22 @@ import axios from 'axios';
 
 export const setLoaded = (payload) => ({
   type: 'SET_LOADED',
-  payload,
+  payload: false,
 });
 
 //получение и сохранение пицц (асинхронный запрос)
 //без redux-thunk не будет работать (функция которая возвращает функцию,action)
-export const fetchPizzas = (sortBe, category) => (dispatch) => {
+export const fetchPizzas = (sortBy, category) => (dispatch) => {
   dispatch(setLoaded(false));
-  axios.get(`http://localhost:3001/pizzas?category=${category}`).then(({ data }) => {
-    dispatch(setPizzas(data));
-  });
+  axios
+    .get(
+      `http://localhost:3001/pizzas?${category != null ? `category{category}` : ''}&_sort=${
+        sortBy.type
+      }&_order=${sortBy.order}`,
+    )
+    .then(({ data }) => {
+      dispatch(setPizzas(data));
+    });
 };
 
 //сохранение пицц
